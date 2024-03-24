@@ -1,0 +1,43 @@
+<.header>
+  Listing Skill categories
+  <:actions>
+    <.link patch={~p"/skill_categories/new"}>
+      <.button>New Skill category</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="skill_categories"
+  rows={@streams.skill_categories}
+  row_click={fn {_id, skill_category} -> JS.navigate(~p"/skill_categories/#{skill_category}") end}
+>
+  <:col :let={{_id, skill_category}} label="Name"><%= skill_category.name %></:col>
+  <:col :let={{_id, skill_category}} label="Position"><%= skill_category.position %></:col>
+  <:col :let={{_id, skill_category}} label="Trace"><%= skill_category.trace_id %></:col>
+  <:action :let={{_id, skill_category}}>
+    <div class="sr-only">
+      <.link navigate={~p"/skill_categories/#{skill_category}"}>Show</.link>
+    </div>
+    <.link patch={~p"/skill_categories/#{skill_category}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, skill_category}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: skill_category.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="skill_category-modal" show on_cancel={JS.patch(~p"/skill_categories")}>
+  <.live_component
+    module={BrightWeb.SkillCategoryLive.FormComponent}
+    id={@skill_category.id || :new}
+    title={@page_title}
+    action={@live_action}
+    skill_category={@skill_category}
+    patch={~p"/skill_categories"}
+  />
+</.modal>

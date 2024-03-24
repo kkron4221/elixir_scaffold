@@ -1,0 +1,46 @@
+<.header>
+  Listing Skill scores
+  <:actions>
+    <.link patch={~p"/skill_scores/new"}>
+      <.button>New Skill score</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="skill_scores"
+  rows={@streams.skill_scores}
+  row_click={fn {_id, skill_score} -> JS.navigate(~p"/skill_scores/#{skill_score}") end}
+>
+  <:col :let={{_id, skill_score}} label="User"><%= skill_score.user_id %></:col>
+  <:col :let={{_id, skill_score}} label="Skill"><%= skill_score.skill_id %></:col>
+  <:col :let={{_id, skill_score}} label="Score"><%= skill_score.score %></:col>
+  <:col :let={{_id, skill_score}} label="Exam progress"><%= skill_score.exam_progress %></:col>
+  <:col :let={{_id, skill_score}} label="Reference read"><%= skill_score.reference_read %></:col>
+  <:col :let={{_id, skill_score}} label="Evidence filled"><%= skill_score.evidence_filled %></:col>
+  <:action :let={{_id, skill_score}}>
+    <div class="sr-only">
+      <.link navigate={~p"/skill_scores/#{skill_score}"}>Show</.link>
+    </div>
+    <.link patch={~p"/skill_scores/#{skill_score}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, skill_score}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: skill_score.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="skill_score-modal" show on_cancel={JS.patch(~p"/skill_scores")}>
+  <.live_component
+    module={BasicWeb.SkillScoreLive.FormComponent}
+    id={@skill_score.id || :new}
+    title={@page_title}
+    action={@live_action}
+    skill_score={@skill_score}
+    patch={~p"/skill_scores"}
+  />
+</.modal>

@@ -1,0 +1,31 @@
+<.header>
+  Skill score <%= @skill_score.id %>
+  <:subtitle>This is a skill_score record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/skill_scores/#{@skill_score}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit skill_score</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="User"><%= @skill_score.user_id %></:item>
+  <:item title="Skill"><%= @skill_score.skill_id %></:item>
+  <:item title="Score"><%= @skill_score.score %></:item>
+  <:item title="Exam progress"><%= @skill_score.exam_progress %></:item>
+  <:item title="Reference read"><%= @skill_score.reference_read %></:item>
+  <:item title="Evidence filled"><%= @skill_score.evidence_filled %></:item>
+</.list>
+
+<.back navigate={~p"/skill_scores"}>Back to skill_scores</.back>
+
+<.modal :if={@live_action == :edit} id="skill_score-modal" show on_cancel={JS.patch(~p"/skill_scores/#{@skill_score}")}>
+  <.live_component
+    module={BasicWeb.SkillScoreLive.FormComponent}
+    id={@skill_score.id}
+    title={@page_title}
+    action={@live_action}
+    skill_score={@skill_score}
+    patch={~p"/skill_scores/#{@skill_score}"}
+  />
+</.modal>

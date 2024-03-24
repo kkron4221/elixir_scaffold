@@ -1,0 +1,28 @@
+<.header>
+  Skill category <%= @skill_category.id %>
+  <:subtitle>This is a skill_category record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/skill_categories/#{@skill_category}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit skill_category</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @skill_category.name %></:item>
+  <:item title="Position"><%= @skill_category.position %></:item>
+  <:item title="Trace"><%= @skill_category.trace_id %></:item>
+</.list>
+
+<.back navigate={~p"/skill_categories"}>Back to skill_categories</.back>
+
+<.modal :if={@live_action == :edit} id="skill_category-modal" show on_cancel={JS.patch(~p"/skill_categories/#{@skill_category}")}>
+  <.live_component
+    module={BasicWeb.SkillCategoryLive.FormComponent}
+    id={@skill_category.id}
+    title={@page_title}
+    action={@live_action}
+    skill_category={@skill_category}
+    patch={~p"/skill_categories/#{@skill_category}"}
+  />
+</.modal>
